@@ -1,0 +1,10 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: repository-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/repository_db
+    username: postgres
+    password: password

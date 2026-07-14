@@ -1,0 +1,10 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: activity-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/activity_db
+    username: postgres
+    password: password
