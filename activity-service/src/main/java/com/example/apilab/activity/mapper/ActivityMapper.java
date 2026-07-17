@@ -7,9 +7,7 @@ import com.example.apilab.activity.dto.response.ActivitySummaryResponse;
 import com.example.apilab.activity.entity.Activity;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 @Component
 public class ActivityMapper {
@@ -21,7 +19,7 @@ public class ActivityMapper {
         Activity activity = new Activity();
         activity.setContent(request.getContent());
         activity.setVisibility(request.getVisibility());
-        activity.setMediaUrls(serializeMediaUrls(request.getMediaUrls()));
+        activity.setMediaUrls(request.getMediaUrls());
         return activity;
     }
 
@@ -36,7 +34,7 @@ public class ActivityMapper {
                 .visibility(activity.getVisibility())
                 .likeCount(activity.getLikeCount())
                 .commentCount(activity.getCommentCount())
-                .mediaUrls(deserializeMediaUrls(activity.getMediaUrls()))
+                .mediaUrls(activity.getMediaUrls() != null ? activity.getMediaUrls() : Collections.emptyList())
                 .createdAt(activity.getCreatedAt())
                 .updatedAt(activity.getUpdatedAt())
                 .build();
@@ -65,21 +63,7 @@ public class ActivityMapper {
             activity.setVisibility(request.getVisibility());
         }
         if (request.getMediaUrls() != null) {
-            activity.setMediaUrls(serializeMediaUrls(request.getMediaUrls()));
+            activity.setMediaUrls(request.getMediaUrls());
         }
-    }
-
-    private String serializeMediaUrls(List<String> mediaUrls) {
-        if (mediaUrls == null || mediaUrls.isEmpty()) {
-            return null;
-        }
-        return String.join(",", mediaUrls);
-    }
-
-    private List<String> deserializeMediaUrls(String mediaUrlsString) {
-        if (mediaUrlsString == null || mediaUrlsString.trim().isEmpty()) {
-            return Collections.emptyList();
-        }
-        return Arrays.asList(mediaUrlsString.split(","));
     }
 }
