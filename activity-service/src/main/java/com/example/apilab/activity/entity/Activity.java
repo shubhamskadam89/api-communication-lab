@@ -11,8 +11,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -45,8 +48,9 @@ public class Activity extends BaseEntity {
     @Builder.Default
     private long commentCount = 0;
 
-    @Column(name = "media_urls", columnDefinition = "TEXT")
-    private String mediaUrls;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "media_urls", columnDefinition = "jsonb")
+    private List<String> mediaUrls;
 
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default
@@ -62,5 +66,18 @@ public class Activity extends BaseEntity {
         if (uuid == null) {
             uuid = UUID.randomUUID();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Activity)) return false;
+        Activity activity = (Activity) o;
+        return uuid != null && uuid.equals(activity.getUuid());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
