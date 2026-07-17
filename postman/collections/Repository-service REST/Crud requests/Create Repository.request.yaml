@@ -1,0 +1,33 @@
+$kind: http-request
+name: Create Repository
+url: "http://localhost:8082/api/users/{{temp_owner_uuid}}/repositories"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |+
+    {
+      "name": "{{temp_repo_name}}",
+      "description": "Postman generated description",
+      "visibility": "PUBLIC",
+      "primaryLanguage": "Java"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      pm.globals.set("temp_owner_uuid", pm.variables.replaceIn("{{$guid}}"));
+      pm.globals.set("temp_repo_name", "Repo-" + pm.variables.replaceIn("{{$randomInt}}"));
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 201", function () {
+          pm.response.to.have.status(201);
+      });
+      pm.test("Response contains repository UUID", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.data.uuid).to.be.a('string');
+          pm.globals.set("created_repo_uuid", jsonData.data.uuid);
+          pm.globals.set("created_repo_owner_uuid", jsonData.data.ownerUuid);
+          pm.globals.set("created_repo_slug", jsonData.data.slug);
+      });
+order: 1000

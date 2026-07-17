@@ -1,5 +1,20 @@
 name: Globals
 values:
+  - key: temp_owner_uuid
+    value: ''
+    enabled: true
+  - key: temp_repo_name
+    value: ''
+    enabled: true
+  - key: created_repo_uuid
+    value: ''
+    enabled: true
+  - key: created_repo_owner_uuid
+    value: ''
+    enabled: true
+  - key: created_repo_slug
+    value: ''
+    enabled: true
   - key: temp_username
     value: ''
     enabled: true
@@ -13,17 +28,5 @@ values:
     value: ''
     enabled: true
   - key: temp_avatarUrl
-    value: ''
-    enabled: true
-  - key: created_user_id
-    value: ''
-    enabled: true
-  - key: temp_new_displayName
-    value: ''
-    enabled: true
-  - key: temp_new_bio
-    value: ''
-    enabled: true
-  - key: temp_new_avatarUrl
     value: ''
     enabled: true

@@ -8,7 +8,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/user_db
     username: postgres
     password: password
-#    driver-class-name: org.postgresql.Driver
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
@@ -16,11 +16,11 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-#
-#grpc:
-#  server:
-#    port: 9091
+  # flyway:
+  #   enabled: true
+  #   baseline-on-migrate: true
+
+# grpc:
+#   server:
+#     port: 9091
 
