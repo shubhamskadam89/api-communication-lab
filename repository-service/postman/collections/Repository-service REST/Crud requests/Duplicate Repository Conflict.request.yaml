@@ -1,0 +1,27 @@
+$kind: http-request
+name: Duplicate Repository Conflict
+url: "http://localhost:8082/api/users/{{temp_owner_uuid}}/repositories"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |+
+    {
+      "name": "{{temp_repo_name}}",
+      "description": "Attempting duplicate slug creation",
+      "visibility": "PUBLIC"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 409", function () {
+          pm.response.to.have.status(409);
+      });
+      pm.test("Error message details conflict", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.status).to.eql(409);
+          pm.expect(jsonData.error).to.eql("CONFLICT");
+          pm.expect(jsonData.message).to.contain("already exists");
+      });
+order: 7000

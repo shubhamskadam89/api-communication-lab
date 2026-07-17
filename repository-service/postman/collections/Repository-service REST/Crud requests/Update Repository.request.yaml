@@ -1,0 +1,28 @@
+$kind: http-request
+name: Update Repository
+url: "http://localhost:8082/api/repositories/{{created_repo_uuid}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |+
+    {
+      "name": "Updated name display",
+      "description": "Updated description",
+      "visibility": "PRIVATE",
+      "primaryLanguage": "Kotlin"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("Name and description updated, slug stays stable", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.data.name).to.eql("Updated name display");
+          pm.expect(jsonData.data.description).to.eql("Updated description");
+          pm.expect(jsonData.data.slug).to.eql(pm.globals.get("created_repo_slug"));
+      });
+order: 4000
