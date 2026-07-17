@@ -1,2 +1,32 @@
 name: Globals
-values: []
+values:
+  - key: temp_owner_uuid
+    value: ''
+    enabled: true
+  - key: temp_repo_name
+    value: ''
+    enabled: true
+  - key: created_repo_uuid
+    value: ''
+    enabled: true
+  - key: created_repo_owner_uuid
+    value: ''
+    enabled: true
+  - key: created_repo_slug
+    value: ''
+    enabled: true
+  - key: temp_username
+    value: ''
+    enabled: true
+  - key: temp_email
+    value: ''
+    enabled: true
+  - key: temp_displayName
+    value: ''
+    enabled: true
+  - key: temp_bio
+    value: ''
+    enabled: true
+  - key: temp_avatarUrl
+    value: ''
+    enabled: true

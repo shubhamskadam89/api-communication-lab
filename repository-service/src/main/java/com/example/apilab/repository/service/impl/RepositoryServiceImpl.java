@@ -12,13 +12,13 @@ import com.example.apilab.repository.service.RepositoryService;
 import com.example.apilab.repository.util.SlugGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,11 +59,10 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RepositoryResponse> getRepositoriesByOwner(UUID ownerUuid) {
-        log.info("Fetching repositories for owner: {}", ownerUuid);
-        return repositoryRepository.findAllByOwnerUuidAndIsDeletedFalse(ownerUuid).stream()
-                .map(repositoryMapper::toResponse)
-                .collect(Collectors.toList());
+    public Page<RepositoryResponse> getRepositoriesByOwner(UUID ownerUuid, Pageable pageable) {
+        log.info("Fetching paginated repositories for owner: {} with parameters: {}", ownerUuid, pageable);
+        return repositoryRepository.findAllByOwnerUuidAndIsDeletedFalse(ownerUuid, pageable)
+                .map(repositoryMapper::toResponse);
     }
 
     @Override

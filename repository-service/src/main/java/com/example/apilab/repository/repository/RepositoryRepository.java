@@ -1,6 +1,8 @@
 package com.example.apilab.repository.repository;
 
 import com.example.apilab.repository.entity.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -14,4 +16,5 @@ public interface RepositoryRepository extends JpaRepository<Repository, Long> {
     Optional<Repository> findByOwnerUuidAndSlugAndIsDeletedFalse(UUID ownerUuid, String slug);
     boolean existsByOwnerUuidAndSlugAndIsDeletedFalse(UUID ownerUuid, String slug);
     List<Repository> findAllByOwnerUuidAndIsDeletedFalse(UUID ownerUuid);
+    Page<Repository> findAllByOwnerUuidAndIsDeletedFalse(UUID ownerUuid, Pageable pageable);
 }

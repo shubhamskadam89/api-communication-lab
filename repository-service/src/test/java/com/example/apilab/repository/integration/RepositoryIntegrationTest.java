@@ -6,6 +6,7 @@ import com.example.apilab.repository.dto.response.ApiResponse;
 import com.example.apilab.repository.dto.response.RepositoryResponse;
 import com.example.apilab.repository.entity.RepositoryVisibility;
 import com.example.apilab.repository.exception.ErrorResponse;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,28 @@ public class RepositoryIntegrationTest {
 
     // Helper classes to avoid generic type mapping problems with TestRestTemplate
     public static class RepositoryApiResponse extends ApiResponse<RepositoryResponse> {}
-    public static class RepositoryListApiResponse extends ApiResponse<List<RepositoryResponse>> {}
+    
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class RestPage<T> {
+        private List<T> content;
+        private int number;
+        private int size;
+        private long totalElements;
+        private int totalPages;
+
+        public List<T> getContent() { return content; }
+        public void setContent(List<T> content) { this.content = content; }
+        public int getNumber() { return number; }
+        public void setNumber(int number) { this.number = number; }
+        public int getSize() { return size; }
+        public void setSize(int size) { this.size = size; }
+        public long getTotalElements() { return totalElements; }
+        public void setTotalElements(long totalElements) { this.totalElements = totalElements; }
+        public int getTotalPages() { return totalPages; }
+        public void setTotalPages(int totalPages) { this.totalPages = totalPages; }
+    }
+    
+    public static class RepositoryPageApiResponse extends ApiResponse<RestPage<RepositoryResponse>> {}
 
     @Test
     @Order(1)
@@ -118,15 +140,17 @@ public class RepositoryIntegrationTest {
     public void testGetRepositoriesByOwner() {
         assertThat(createdRepositoryUuid).isNotNull();
 
-        ResponseEntity<RepositoryListApiResponse> response = restTemplate.getForEntity(
-                "/api/users/" + ownerUuid + "/repositories",
-                RepositoryListApiResponse.class
+        ResponseEntity<RepositoryPageApiResponse> response = restTemplate.getForEntity(
+                "/api/users/" + ownerUuid + "/repositories?page=0&size=5",
+                RepositoryPageApiResponse.class
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getData()).isNotEmpty();
-        assertThat(response.getBody().getData().get(0).getUuid()).isEqualTo(createdRepositoryUuid);
+        assertThat(response.getBody().getData()).isNotNull();
+        assertThat(response.getBody().getData().getContent()).isNotEmpty();
+        assertThat(response.getBody().getData().getContent().get(0).getUuid()).isEqualTo(createdRepositoryUuid);
+        assertThat(response.getBody().getData().getTotalElements()).isEqualTo(1L);
     }
 
     @Test
