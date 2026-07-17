@@ -1,0 +1,15 @@
+$kind: http-request
+name: Delete Activity
+url: "http://localhost:8083/api/activities/{{created_activity_uuid}}"
+method: DELETE
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("Response matches deleted activity UUID", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.data.uuid).to.eql(pm.globals.get("created_activity_uuid"));
+      });
+order: 6000
