@@ -1,0 +1,29 @@
+name: Globals
+values:
+  - key: temp_username
+    value: ''
+    enabled: true
+  - key: temp_email
+    value: ''
+    enabled: true
+  - key: temp_displayName
+    value: ''
+    enabled: true
+  - key: temp_bio
+    value: ''
+    enabled: true
+  - key: temp_avatarUrl
+    value: ''
+    enabled: true
+  - key: created_user_id
+    value: ''
+    enabled: true
+  - key: temp_new_displayName
+    value: ''
+    enabled: true
+  - key: temp_new_bio
+    value: ''
+    enabled: true
+  - key: temp_new_avatarUrl
+    value: ''
+    enabled: true

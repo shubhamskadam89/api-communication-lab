@@ -1,0 +1,16 @@
+$kind: http-request
+name: Get User
+url: "http://localhost:8081/api/users/{{created_user_id}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("User data matches created values", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.username).to.eql(pm.globals.get("temp_username"));
+          pm.expect(jsonData.email).to.eql(pm.globals.get("temp_email"));
+      });
+order: 2000

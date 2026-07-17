@@ -1,0 +1,32 @@
+$kind: http-request
+name: Update User
+url: "http://localhost:8081/api/users/{{created_user_id}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |+
+    {
+      "displayName": "{{temp_new_displayName}}",
+      "bio": "{{temp_new_bio}}",
+      "avatarUrl": "{{temp_new_avatarUrl}}"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      pm.globals.set("temp_new_displayName", pm.variables.replaceIn("{{$randomFullName}}"));
+      pm.globals.set("temp_new_bio", pm.variables.replaceIn("{{$randomJobDescriptor}}"));
+      pm.globals.set("temp_new_avatarUrl", pm.variables.replaceIn("{{$randomAbstractImage}}"));
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("Updated data is correct", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.displayName).to.eql(pm.globals.get("temp_new_displayName"));
+          pm.expect(jsonData.bio).to.eql(pm.globals.get("temp_new_bio"));
+          pm.expect(jsonData.avatarUrl).to.eql(pm.globals.get("temp_new_avatarUrl"));
+      });
+order: 4000
