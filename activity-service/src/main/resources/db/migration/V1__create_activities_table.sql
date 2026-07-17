@@ -10,7 +10,8 @@ CREATE TABLE activities (
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    deleted_at TIMESTAMP WITH TIME ZONE NULL
+    deleted_at TIMESTAMP WITH TIME ZONE NULL,
+    version BIGINT NOT NULL DEFAULT 0
 );
 
 CREATE INDEX idx_activities_uuid ON activities(uuid);
