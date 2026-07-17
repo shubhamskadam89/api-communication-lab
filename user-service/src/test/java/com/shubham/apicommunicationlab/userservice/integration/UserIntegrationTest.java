@@ -20,10 +20,13 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.UUID;
 
+import org.springframework.test.context.ActiveProfiles;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ActiveProfiles("test")
 public class UserIntegrationTest {
 
     @Autowired
