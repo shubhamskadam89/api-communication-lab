@@ -8,14 +8,16 @@ body:
   type: json
   content: |+
     {
-      "content": "Just launched a new Spring Boot microservice!",
+      "content": "{{temp_activity_content}}",
       "visibility": "PUBLIC",
-      "mediaUrls": ["https://example.com/screenshot.png"]
+      "mediaUrls": ["{{temp_activity_mediaUrl}}"]
     }
 scripts:
   - type: beforeRequest
     code: |-
       pm.globals.set("temp_author_uuid", pm.variables.replaceIn("{{$guid}}"));
+      pm.globals.set("temp_activity_content", pm.variables.replaceIn("{{$randomLoremSentence}}"));
+      pm.globals.set("temp_activity_mediaUrl", pm.variables.replaceIn("{{$randomUrl}}"));
   - type: afterResponse
     code: |-
       pm.test("Status code is 201", function () {

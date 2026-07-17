@@ -17,12 +17,11 @@ body:
 scripts:
   - type: beforeRequest
     code: |-
-      var cycleId = Date.now() + "_" + pm.variables.replaceIn("{{$randomInt}}");
-      pm.globals.set("temp_username", "user_" + cycleId);
-      pm.globals.set("temp_email", "user_" + cycleId + "@example.com");
-      pm.globals.set("temp_displayName", "User " + cycleId);
-      pm.globals.set("temp_bio", "Developer profile " + cycleId);
-      pm.globals.set("temp_avatarUrl", "https://example.com/avatar/" + cycleId + ".png");
+      pm.globals.set("temp_username", pm.variables.replaceIn("{{$randomUserName}}"));
+      pm.globals.set("temp_email", pm.variables.replaceIn("{{$randomEmail}}"));
+      pm.globals.set("temp_displayName", pm.variables.replaceIn("{{$randomFullName}}"));
+      pm.globals.set("temp_bio", pm.variables.replaceIn("{{$randomLoremSentence}}"));
+      pm.globals.set("temp_avatarUrl", pm.variables.replaceIn("{{$randomAvatarImage}}"));
   - type: afterResponse
     code: |-
       pm.test("Status code is 201", function () {
