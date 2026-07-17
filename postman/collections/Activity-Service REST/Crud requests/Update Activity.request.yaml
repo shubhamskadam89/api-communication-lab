@@ -8,11 +8,15 @@ body:
   type: json
   content: |+
     {
-      "content": "Just launched a new Spring Boot microservice! Check out the README.",
+      "content": "{{temp_updated_activity_content}}",
       "visibility": "PUBLIC",
-      "mediaUrls": ["https://example.com/screenshot.png"]
+      "mediaUrls": ["{{temp_updated_activity_mediaUrl}}"]
     }
 scripts:
+  - type: beforeRequest
+    code: |-
+      pm.globals.set("temp_updated_activity_content", pm.variables.replaceIn("{{$randomLoremSentence}}"));
+      pm.globals.set("temp_updated_activity_mediaUrl", pm.variables.replaceIn("{{$randomUrl}}"));
   - type: afterResponse
     code: |-
       pm.test("Status code is 200", function () {
@@ -20,6 +24,6 @@ scripts:
       });
       pm.test("Response content was updated", function () {
           var jsonData = pm.response.json();
-          pm.expect(jsonData.data.content).to.eql("Just launched a new Spring Boot microservice! Check out the README.");
+          pm.expect(jsonData.data.content).to.eql(pm.globals.get("temp_updated_activity_content"));
       });
 order: 5000

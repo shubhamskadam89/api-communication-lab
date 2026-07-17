@@ -16,11 +16,10 @@ body:
 scripts:
   - type: beforeRequest
     code: |-
-      var cycleId = Date.now() + "_" + pm.variables.replaceIn("{{$randomInt}}");
       var languages = ["Kotlin", "Java", "Go", "Python", "TypeScript"];
       var languageIndex = Number(pm.variables.replaceIn("{{$randomInt}}")) % languages.length;
-      pm.globals.set("temp_updated_repo_name", "Updated Repo " + cycleId);
-      pm.globals.set("temp_updated_repo_description", "Updated description " + cycleId);
+      pm.globals.set("temp_updated_repo_name", pm.variables.replaceIn("{{$randomWords}}"));
+      pm.globals.set("temp_updated_repo_description", pm.variables.replaceIn("{{$randomLoremSentence}}"));
       pm.globals.set("temp_updated_repo_language", languages[languageIndex]);
   - type: afterResponse
     code: |-

@@ -6,6 +6,12 @@ values:
   - key: temp_repo_name
     value: ''
     enabled: true
+  - key: temp_repo_description
+    value: ''
+    enabled: true
+  - key: temp_repo_language
+    value: ''
+    enabled: true
   - key: created_repo_uuid
     value: ''
     enabled: true
@@ -37,5 +43,38 @@ values:
     value: ''
     enabled: true
   - key: created_activity_author_uuid
+    value: ''
+    enabled: true
+  - key: created_user_uuid
+    value: ''
+    enabled: true
+  - key: temp_new_displayName
+    value: ''
+    enabled: true
+  - key: temp_new_bio
+    value: ''
+    enabled: true
+  - key: temp_new_avatarUrl
+    value: ''
+    enabled: true
+  - key: temp_activity_content
+    value: ''
+    enabled: true
+  - key: temp_activity_mediaUrl
+    value: ''
+    enabled: true
+  - key: temp_updated_activity_content
+    value: ''
+    enabled: true
+  - key: temp_updated_activity_mediaUrl
+    value: ''
+    enabled: true
+  - key: temp_updated_repo_name
+    value: ''
+    enabled: true
+  - key: temp_updated_repo_description
+    value: ''
+    enabled: true
+  - key: temp_updated_repo_language
     value: ''
     enabled: true
