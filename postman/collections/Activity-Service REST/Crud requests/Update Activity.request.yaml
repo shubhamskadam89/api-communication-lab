@@ -1,0 +1,25 @@
+$kind: http-request
+name: Update Activity
+url: "http://localhost:8083/api/v1/activities/{{created_activity_uuid}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |+
+    {
+      "content": "Just launched a new Spring Boot microservice! Check out the README.",
+      "visibility": "PUBLIC",
+      "mediaUrls": ["https://example.com/screenshot.png"]
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("Response content was updated", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.data.content).to.eql("Just launched a new Spring Boot microservice! Check out the README.");
+      });
+order: 5000

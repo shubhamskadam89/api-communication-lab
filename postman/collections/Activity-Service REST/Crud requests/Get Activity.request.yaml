@@ -1,0 +1,15 @@
+$kind: http-request
+name: Get Activity
+url: "http://localhost:8083/api/v1/activities/{{created_activity_uuid}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("Response matches created activity UUID", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.data.uuid).to.eql(pm.globals.get("created_activity_uuid"));
+      });
+order: 2000

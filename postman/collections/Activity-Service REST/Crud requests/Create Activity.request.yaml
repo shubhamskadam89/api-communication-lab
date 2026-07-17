@@ -1,0 +1,30 @@
+$kind: http-request
+name: Create Activity
+url: "http://localhost:8083/api/v1/users/{{temp_author_uuid}}/activities"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |+
+    {
+      "content": "Just launched a new Spring Boot microservice!",
+      "visibility": "PUBLIC",
+      "mediaUrls": ["https://example.com/screenshot.png"]
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      pm.globals.set("temp_author_uuid", pm.variables.replaceIn("{{$guid}}"));
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 201", function () {
+          pm.response.to.have.status(201);
+      });
+      pm.test("Response contains activity UUID", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.data.uuid).to.be.a('string');
+          pm.globals.set("created_activity_uuid", jsonData.data.uuid);
+          pm.globals.set("created_activity_author_uuid", jsonData.data.authorUuid);
+      });
+order: 1000
