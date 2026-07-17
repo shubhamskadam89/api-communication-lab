@@ -2,9 +2,11 @@ package com.shubham.apicommunicationlab.userservice.controller;
 
 import com.shubham.apicommunicationlab.userservice.dto.request.CreateUserRequest;
 import com.shubham.apicommunicationlab.userservice.dto.request.UpdateUserRequest;
+import com.shubham.apicommunicationlab.userservice.dto.response.ApiResponse;
 import com.shubham.apicommunicationlab.userservice.dto.response.UserResponse;
 import com.shubham.apicommunicationlab.userservice.dto.response.UserSummaryResponse;
 import com.shubham.apicommunicationlab.userservice.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
@@ -30,42 +32,78 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(
+            @RequestBody @Valid CreateUserRequest request,
+            HttpServletRequest servletRequest) {
         log.info("REST Request - Create user with username: {}", request.getUsername());
         UserResponse response = userService.createUser(request);
-        log.info("REST Response - User created with uuid: {}", response.getUuid());
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        ApiResponse<UserResponse> apiResponse = ApiResponse.success(
+                HttpStatus.CREATED.value(),
+                "User created successfully",
+                response,
+                servletRequest.getRequestURI()
+        );
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable UUID uuid, @RequestBody @Valid UpdateUserRequest request) {
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(
+            @PathVariable UUID uuid,
+            @RequestBody @Valid UpdateUserRequest request,
+            HttpServletRequest servletRequest) {
         log.info("REST Request - Update user with uuid: {}", uuid);
         UserResponse response = userService.updateUser(uuid, request);
-        log.info("REST Response - User updated with uuid: {}", response.getUuid());
-        return ResponseEntity.ok(response);
+        ApiResponse<UserResponse> apiResponse = ApiResponse.success(
+                HttpStatus.OK.value(),
+                "User updated successfully",
+                response,
+                servletRequest.getRequestURI()
+        );
+        return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<UserResponse> getUserByUuid(@PathVariable UUID uuid) {
+    public ResponseEntity<ApiResponse<UserResponse>> getUserByUuid(
+            @PathVariable UUID uuid,
+            HttpServletRequest servletRequest) {
         log.info("REST Request - Get user by uuid: {}", uuid);
         UserResponse response = userService.getUserByUuid(uuid);
-        log.info("REST Response - User retrieved with uuid: {}", response.getUuid());
-        return ResponseEntity.ok(response);
+        ApiResponse<UserResponse> apiResponse = ApiResponse.success(
+                HttpStatus.OK.value(),
+                "User retrieved successfully",
+                response,
+                servletRequest.getRequestURI()
+        );
+        return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/{uuid}/summary")
-    public ResponseEntity<UserSummaryResponse> getUserSummaryByUuid(@PathVariable UUID uuid) {
+    public ResponseEntity<ApiResponse<UserSummaryResponse>> getUserSummaryByUuid(
+            @PathVariable UUID uuid,
+            HttpServletRequest servletRequest) {
         log.info("REST Request - Get user summary by uuid: {}", uuid);
         UserSummaryResponse response = userService.getUserSummaryByUuid(uuid);
-        log.info("REST Response - User summary retrieved with uuid: {}", response.getUuid());
-        return ResponseEntity.ok(response);
+        ApiResponse<UserSummaryResponse> apiResponse = ApiResponse.success(
+                HttpStatus.OK.value(),
+                "User summary retrieved successfully",
+                response,
+                servletRequest.getRequestURI()
+        );
+        return ResponseEntity.ok(apiResponse);
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID uuid) {
+    public ResponseEntity<ApiResponse<UserResponse>> deleteUser(
+            @PathVariable UUID uuid,
+            HttpServletRequest servletRequest) {
         log.info("REST Request - Delete user by uuid: {}", uuid);
-        userService.deleteUser(uuid);
-        log.info("REST Response - User deleted successfully for uuid: {}", uuid);
-        return ResponseEntity.noContent().build();
+        UserResponse response = userService.deleteUser(uuid);
+        ApiResponse<UserResponse> apiResponse = ApiResponse.success(
+                HttpStatus.OK.value(),
+                "User deleted successfully",
+                response,
+                servletRequest.getRequestURI()
+        );
+        return ResponseEntity.ok(apiResponse);
     }
 }
