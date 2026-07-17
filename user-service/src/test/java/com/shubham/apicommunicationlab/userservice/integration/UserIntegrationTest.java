@@ -2,6 +2,7 @@ package com.shubham.apicommunicationlab.userservice.integration;
 
 import com.shubham.apicommunicationlab.userservice.dto.request.CreateUserRequest;
 import com.shubham.apicommunicationlab.userservice.dto.request.UpdateUserRequest;
+import com.shubham.apicommunicationlab.userservice.dto.response.ApiResponse;
 import com.shubham.apicommunicationlab.userservice.dto.response.UserResponse;
 import com.shubham.apicommunicationlab.userservice.dto.response.UserSummaryResponse;
 import com.shubham.apicommunicationlab.userservice.exception.ErrorResponse;
@@ -19,10 +20,13 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.UUID;
 
+import org.springframework.test.context.ActiveProfiles;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ActiveProfiles("test")
 public class UserIntegrationTest {
 
     @Autowired
@@ -31,6 +35,10 @@ public class UserIntegrationTest {
     private static UUID createdUserUuid;
     private static final String username = "test_user_" + UUID.randomUUID().toString().substring(0, 8);
     private static final String email = username + "@example.com";
+
+    // Helper classes to avoid generic type mapping problems with TestRestTemplate
+    public static class UserApiResponse extends ApiResponse<UserResponse> {}
+    public static class UserSummaryApiResponse extends ApiResponse<UserSummaryResponse> {}
 
     @Test
     @Order(1)
@@ -43,19 +51,20 @@ public class UserIntegrationTest {
                 .avatarUrl("https://example.com/avatar.png")
                 .build();
 
-        ResponseEntity<UserResponse> response = restTemplate.postForEntity(
-                "/api/users",
+        ResponseEntity<UserApiResponse> response = restTemplate.postForEntity(
+                "/api/v1/users",
                 request,
-                UserResponse.class
+                UserApiResponse.class
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getUuid()).isNotNull();
-        assertThat(response.getBody().getUsername()).isEqualTo(username);
-        assertThat(response.getBody().getEmail()).isEqualTo(email);
+        assertThat(response.getBody().getData()).isNotNull();
+        assertThat(response.getBody().getData().getUuid()).isNotNull();
+        assertThat(response.getBody().getData().getUsername()).isEqualTo(username);
+        assertThat(response.getBody().getData().getEmail()).isEqualTo(email);
 
-        createdUserUuid = response.getBody().getUuid();
+        createdUserUuid = response.getBody().getData().getUuid();
     }
 
     @Test
@@ -63,15 +72,16 @@ public class UserIntegrationTest {
     public void testGetUser() {
         assertThat(createdUserUuid).isNotNull();
 
-        ResponseEntity<UserResponse> response = restTemplate.getForEntity(
-                "/api/users/" + createdUserUuid,
-                UserResponse.class
+        ResponseEntity<UserApiResponse> response = restTemplate.getForEntity(
+                "/api/v1/users/" + createdUserUuid,
+                UserApiResponse.class
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getUuid()).isEqualTo(createdUserUuid);
-        assertThat(response.getBody().getUsername()).isEqualTo(username);
+        assertThat(response.getBody().getData()).isNotNull();
+        assertThat(response.getBody().getData().getUuid()).isEqualTo(createdUserUuid);
+        assertThat(response.getBody().getData().getUsername()).isEqualTo(username);
     }
 
     @Test
@@ -79,16 +89,17 @@ public class UserIntegrationTest {
     public void testGetUserSummary() {
         assertThat(createdUserUuid).isNotNull();
 
-        ResponseEntity<UserSummaryResponse> response = restTemplate.getForEntity(
-                "/api/users/" + createdUserUuid + "/summary",
-                UserSummaryResponse.class
+        ResponseEntity<UserSummaryApiResponse> response = restTemplate.getForEntity(
+                "/api/v1/users/" + createdUserUuid + "/summary",
+                UserSummaryApiResponse.class
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getUuid()).isEqualTo(createdUserUuid);
-        assertThat(response.getBody().getUsername()).isEqualTo(username);
-        assertThat(response.getBody().getDisplayName()).isEqualTo("Test User");
+        assertThat(response.getBody().getData()).isNotNull();
+        assertThat(response.getBody().getData().getUuid()).isEqualTo(createdUserUuid);
+        assertThat(response.getBody().getData().getUsername()).isEqualTo(username);
+        assertThat(response.getBody().getData().getDisplayName()).isEqualTo("Test User");
     }
 
     @Test
@@ -104,18 +115,19 @@ public class UserIntegrationTest {
 
         HttpEntity<UpdateUserRequest> entity = new HttpEntity<>(request);
 
-        ResponseEntity<UserResponse> response = restTemplate.exchange(
-                "/api/users/" + createdUserUuid,
+        ResponseEntity<UserApiResponse> response = restTemplate.exchange(
+                "/api/v1/users/" + createdUserUuid,
                 HttpMethod.PUT,
                 entity,
-                UserResponse.class
+                UserApiResponse.class
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getUuid()).isEqualTo(createdUserUuid);
-        assertThat(response.getBody().getDisplayName()).isEqualTo("Updated Test User");
-        assertThat(response.getBody().getBio()).isEqualTo("Updated Bio");
+        assertThat(response.getBody().getData()).isNotNull();
+        assertThat(response.getBody().getData().getUuid()).isEqualTo(createdUserUuid);
+        assertThat(response.getBody().getData().getDisplayName()).isEqualTo("Updated Test User");
+        assertThat(response.getBody().getData().getBio()).isEqualTo("Updated Bio");
     }
 
     @Test
@@ -123,18 +135,21 @@ public class UserIntegrationTest {
     public void testDeleteUser() {
         assertThat(createdUserUuid).isNotNull();
 
-        ResponseEntity<Void> deleteResponse = restTemplate.exchange(
-                "/api/users/" + createdUserUuid,
+        ResponseEntity<UserApiResponse> deleteResponse = restTemplate.exchange(
+                "/api/v1/users/" + createdUserUuid,
                 HttpMethod.DELETE,
                 null,
-                Void.class
+                UserApiResponse.class
         );
 
-        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(deleteResponse.getBody()).isNotNull();
+        assertThat(deleteResponse.getBody().getData()).isNotNull();
+        assertThat(deleteResponse.getBody().getData().getUuid()).isEqualTo(createdUserUuid);
 
         // Verify soft deleted user acts as non-existent (returns 404)
         ResponseEntity<ErrorResponse> getResponse = restTemplate.getForEntity(
-                "/api/users/" + createdUserUuid,
+                "/api/v1/users/" + createdUserUuid,
                 ErrorResponse.class
         );
 
@@ -143,7 +158,7 @@ public class UserIntegrationTest {
         assertThat(getResponse.getBody().getStatus()).isEqualTo(404);
         assertThat(getResponse.getBody().getError()).isEqualTo("NOT_FOUND");
         assertThat(getResponse.getBody().getMessage()).contains("User not found");
-        assertThat(getResponse.getBody().getPath()).contains("/api/users/");
+        assertThat(getResponse.getBody().getPath()).contains("/api/v1/users/");
     }
 
     @Test
@@ -155,7 +170,7 @@ public class UserIntegrationTest {
                 .build();
 
         ResponseEntity<ErrorResponse> response = restTemplate.postForEntity(
-                "/api/users",
+                "/api/v1/users",
                 request,
                 ErrorResponse.class
         );

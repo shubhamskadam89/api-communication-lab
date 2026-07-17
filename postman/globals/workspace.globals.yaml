@@ -30,3 +30,12 @@ values:
   - key: temp_avatarUrl
     value: ''
     enabled: true
+  - key: temp_author_uuid
+    value: ''
+    enabled: true
+  - key: created_activity_uuid
+    value: ''
+    enabled: true
+  - key: created_activity_author_uuid
+    value: ''
+    enabled: true

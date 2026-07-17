@@ -1,6 +1,6 @@
 $kind: http-request
 name: Get User Summary
-url: "http://localhost:8081/api/users/{{created_user_id}}/summary"
+url: "http://localhost:8081/api/v1/users/{{created_user_uuid}}/summary"
 method: GET
 scripts:
   - type: afterResponse
@@ -10,7 +10,7 @@ scripts:
       });
       pm.test("Summary data matches created values", function () {
           var jsonData = pm.response.json();
-          pm.expect(jsonData.username).to.eql(pm.globals.get("temp_username"));
-          pm.expect(jsonData.displayName).to.eql(pm.globals.get("temp_displayName"));
+          pm.expect(jsonData.data.username).to.eql(pm.globals.get("temp_username"));
+          pm.expect(jsonData.data.displayName).to.eql(pm.globals.get("temp_displayName"));
       });
 order: 3000

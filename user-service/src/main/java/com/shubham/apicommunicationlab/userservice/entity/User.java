@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,6 +43,10 @@ public class User extends BaseEntity {
     @Builder.Default
     private boolean isDeleted = false;
 
+    @Version
+    @Column(nullable = false)
+    private Long version;
+
     @PrePersist
     @Override
     protected void onCreate() {
@@ -49,5 +54,18 @@ public class User extends BaseEntity {
         if (uuid == null) {
             uuid = UUID.randomUUID();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return uuid != null && uuid.equals(user.getUuid());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

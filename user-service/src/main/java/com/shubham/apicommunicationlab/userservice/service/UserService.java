@@ -12,5 +12,5 @@ public interface UserService {
     UserResponse updateUser(UUID uuid, UpdateUserRequest request);
     UserResponse getUserByUuid(UUID uuid);
     UserSummaryResponse getUserSummaryByUuid(UUID uuid);
-    void deleteUser(UUID uuid);
+    UserResponse deleteUser(UUID uuid);
 }
