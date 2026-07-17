@@ -1,0 +1,39 @@
+$kind: http-request
+name: Create User
+url: "http://localhost:8081/api/users"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |+
+    {
+      "username": "{{temp_username}}",
+      "email": "{{temp_email}}",
+      "displayName": "{{temp_displayName}}",
+      "bio": "{{temp_bio}}",
+      "avatarUrl": "{{temp_avatarUrl}}"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      pm.globals.set("temp_username", pm.variables.replaceIn("{{$randomUserName}}"));
+      pm.globals.set("temp_email", pm.variables.replaceIn("{{$randomEmail}}"));
+      pm.globals.set("temp_displayName", pm.variables.replaceIn("{{$randomFullName}}"));
+      pm.globals.set("temp_bio", pm.variables.replaceIn("{{$randomJobDescriptor}}"));
+      pm.globals.set("temp_avatarUrl", pm.variables.replaceIn("{{$randomAbstractImage}}"));
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 201", function () {
+          pm.response.to.have.status(201);
+      });
+      pm.test("Response contains user UUID", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.uuid).to.be.a('string');
+          pm.globals.set("created_user_id", jsonData.uuid);
+      });
+      pm.test("Response username matches generated value", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.username).to.eql(pm.globals.get("temp_username"));
+      });
+order: 1000
