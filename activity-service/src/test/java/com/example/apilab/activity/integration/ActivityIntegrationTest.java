@@ -70,7 +70,7 @@ public class ActivityIntegrationTest {
                 .build();
 
         ResponseEntity<ActivityApiResponse> response = restTemplate.postForEntity(
-                "/api/users/" + authorUuid + "/activities",
+                "/api/v1/users/" + authorUuid + "/activities",
                 request,
                 ActivityApiResponse.class
         );
@@ -100,7 +100,7 @@ public class ActivityIntegrationTest {
                 .build();
 
         ResponseEntity<ErrorResponse> response = restTemplate.postForEntity(
-                "/api/users/" + authorUuid + "/activities",
+                "/api/v1/users/" + authorUuid + "/activities",
                 request,
                 ErrorResponse.class
         );
@@ -117,7 +117,7 @@ public class ActivityIntegrationTest {
         assertThat(createdActivityUuid).isNotNull();
 
         ResponseEntity<ActivityApiResponse> response = restTemplate.getForEntity(
-                "/api/activities/" + createdActivityUuid,
+                "/api/v1/activities/" + createdActivityUuid,
                 ActivityApiResponse.class
         );
 
@@ -136,7 +136,7 @@ public class ActivityIntegrationTest {
         assertThat(createdActivityUuid).isNotNull();
 
         ResponseEntity<ActivityPageApiResponse> response = restTemplate.getForEntity(
-                "/api/activities?page=0&size=10",
+                "/api/v1/activities?page=0&size=10",
                 ActivityPageApiResponse.class
         );
 
@@ -153,7 +153,7 @@ public class ActivityIntegrationTest {
         assertThat(createdActivityUuid).isNotNull();
 
         ResponseEntity<ActivityPageApiResponse> response = restTemplate.getForEntity(
-                "/api/users/" + authorUuid + "/activities?page=0&size=10",
+                "/api/v1/users/" + authorUuid + "/activities?page=0&size=10",
                 ActivityPageApiResponse.class
         );
 
@@ -178,7 +178,7 @@ public class ActivityIntegrationTest {
         HttpEntity<UpdateActivityRequest> entity = new HttpEntity<>(request);
 
         ResponseEntity<ActivityApiResponse> response = restTemplate.exchange(
-                "/api/activities/" + createdActivityUuid,
+                "/api/v1/activities/" + createdActivityUuid,
                 HttpMethod.PUT,
                 entity,
                 ActivityApiResponse.class
@@ -200,7 +200,7 @@ public class ActivityIntegrationTest {
         assertThat(createdActivityUuid).isNotNull();
 
         ResponseEntity<ActivityApiResponse> response = restTemplate.exchange(
-                "/api/activities/" + createdActivityUuid,
+                "/api/v1/activities/" + createdActivityUuid,
                 HttpMethod.DELETE,
                 null,
                 ActivityApiResponse.class
@@ -213,7 +213,7 @@ public class ActivityIntegrationTest {
 
         // Verify soft-deleted activity acts as non-existent (yields 404)
         ResponseEntity<ErrorResponse> getResponse = restTemplate.getForEntity(
-                "/api/activities/" + createdActivityUuid,
+                "/api/v1/activities/" + createdActivityUuid,
                 ErrorResponse.class
         );
 
