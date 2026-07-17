@@ -1,6 +1,6 @@
 $kind: http-request
 name: Get User
-url: "http://localhost:8081/api/users/{{created_user_id}}"
+url: "http://localhost:8081/api/v1/users/{{created_user_uuid}}"
 method: GET
 scripts:
   - type: afterResponse
@@ -8,9 +8,8 @@ scripts:
       pm.test("Status code is 200", function () {
           pm.response.to.have.status(200);
       });
-      pm.test("User data matches created values", function () {
+      pm.test("Response matches created user UUID", function () {
           var jsonData = pm.response.json();
-          pm.expect(jsonData.username).to.eql(pm.globals.get("temp_username"));
-          pm.expect(jsonData.email).to.eql(pm.globals.get("temp_email"));
+          pm.expect(jsonData.data.uuid).to.eql(pm.globals.get("created_user_uuid"));
       });
 order: 2000

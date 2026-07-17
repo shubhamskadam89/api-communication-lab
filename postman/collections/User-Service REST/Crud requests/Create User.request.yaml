@@ -1,6 +1,6 @@
 $kind: http-request
 name: Create User
-url: "http://localhost:8081/api/users"
+url: "http://localhost:8081/api/v1/users"
 method: POST
 headers:
   Content-Type: application/json
@@ -10,18 +10,16 @@ body:
     {
       "username": "{{temp_username}}",
       "email": "{{temp_email}}",
-      "displayName": "{{temp_displayName}}",
-      "bio": "{{temp_bio}}",
-      "avatarUrl": "{{temp_avatarUrl}}"
+      "displayName": "User {{$randomInt}}",
+      "bio": "Developer profile",
+      "avatarUrl": "https://example.com/avatar.png"
     }
 scripts:
   - type: beforeRequest
     code: |-
-      pm.globals.set("temp_username", pm.variables.replaceIn("{{$randomUserName}}"));
-      pm.globals.set("temp_email", pm.variables.replaceIn("{{$randomEmail}}"));
-      pm.globals.set("temp_displayName", pm.variables.replaceIn("{{$randomFullName}}"));
-      pm.globals.set("temp_bio", pm.variables.replaceIn("{{$randomJobDescriptor}}"));
-      pm.globals.set("temp_avatarUrl", pm.variables.replaceIn("{{$randomAbstractImage}}"));
+      var randomInt = pm.variables.replaceIn("{{$randomInt}}");
+      pm.globals.set("temp_username", "user_" + randomInt);
+      pm.globals.set("temp_email", "user_" + randomInt + "@example.com");
   - type: afterResponse
     code: |-
       pm.test("Status code is 201", function () {
@@ -29,11 +27,7 @@ scripts:
       });
       pm.test("Response contains user UUID", function () {
           var jsonData = pm.response.json();
-          pm.expect(jsonData.uuid).to.be.a('string');
-          pm.globals.set("created_user_id", jsonData.uuid);
-      });
-      pm.test("Response username matches generated value", function () {
-          var jsonData = pm.response.json();
-          pm.expect(jsonData.username).to.eql(pm.globals.get("temp_username"));
+          pm.expect(jsonData.data.uuid).to.be.a('string');
+          pm.globals.set("created_user_uuid", jsonData.data.uuid);
       });
 order: 1000

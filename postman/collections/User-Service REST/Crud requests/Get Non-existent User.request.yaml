@@ -1,6 +1,6 @@
 $kind: http-request
 name: Get Non-existent User
-url: "http://localhost:8081/api/users/00000000-0000-0000-0000-000000000000"
+url: "http://localhost:8081/api/v1/users/00000000-0000-0000-0000-000000000000"
 method: GET
 scripts:
   - type: afterResponse
@@ -13,6 +13,6 @@ scripts:
           pm.expect(jsonData.status).to.eql(404);
           pm.expect(jsonData.error).to.eql("NOT_FOUND");
           pm.expect(jsonData.message).to.contain("User not found");
-          pm.expect(jsonData.path).to.contain("/api/users/");
+          pm.expect(jsonData.path).to.contain("/api/v1/users/");
       });
 order: 5000

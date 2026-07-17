@@ -1,11 +1,15 @@
 $kind: http-request
 name: Delete User
-url: "http://localhost:8081/api/users/{{created_user_id}}"
+url: "http://localhost:8081/api/v1/users/{{created_user_uuid}}"
 method: DELETE
 scripts:
   - type: afterResponse
     code: |-
-      pm.test("Status code is 204", function () {
-          pm.response.to.have.status(204);
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("Response contains deleted user UUID", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.data.uuid).to.eql(pm.globals.get("created_user_uuid"));
       });
 order: 6000
