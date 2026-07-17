@@ -13,9 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -75,7 +75,7 @@ public class RepositoryController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PatchMapping("/api/repositories/{repositoryUuid}")
+    @PutMapping("/api/repositories/{repositoryUuid}")
     public ResponseEntity<ApiResponse<RepositoryResponse>> updateRepository(
             @PathVariable UUID repositoryUuid,
             @RequestBody @Valid UpdateRepositoryRequest request,
@@ -91,7 +91,7 @@ public class RepositoryController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PatchMapping("/api/repositories/{repositoryUuid}/archive")
+    @PutMapping("/api/repositories/{repositoryUuid}/archive")
     public ResponseEntity<ApiResponse<RepositoryResponse>> archiveRepository(
             @PathVariable UUID repositoryUuid,
             HttpServletRequest servletRequest) {
