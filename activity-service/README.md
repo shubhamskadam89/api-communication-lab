@@ -3,6 +3,36 @@
 ## Responsibility
 Owns user activity records (social posts, feed items), manages visibility states, and handles CRUD operations for the activity feed.
 
+---
+
+## Architecture Flow
+
+```
+Client
+   │ (HTTP REST)
+   ▼
+API Service (Gateway)
+   │ (Internal HTTP)
+   ▼
+Activity Service
+   │
+   ▼
+PostgreSQL (JSONB Storage)
+```
+
+### Communication Evolution Roadmap
+```
+     REST Today
+         │
+         ▼
+     gRPC Tomorrow (high frequency microservice sync)
+         │
+         ▼
+GraphQL Gateway Aggregation (composed graph query gateway)
+```
+
+---
+
 ## Why UUID + Long?
 We use a dual-identifier strategy:
 - **Internal `Long` ID**: Used as the database auto-incrementing primary key. Highly optimized for sequential B-Tree indexing, database joins, and logged internally for trace analysis.
