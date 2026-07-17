@@ -1,6 +1,6 @@
 $kind: http-request
 name: List Public Feed
-url: "http://localhost:8083/api/activities?page=0&size=10"
+url: "http://localhost:8083/api/v1/activities?page=0&size=10"
 method: GET
 scripts:
   - type: afterResponse

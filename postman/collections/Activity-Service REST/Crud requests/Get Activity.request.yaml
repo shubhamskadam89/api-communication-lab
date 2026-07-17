@@ -1,6 +1,6 @@
 $kind: http-request
 name: Get Activity
-url: "http://localhost:8083/api/activities/{{created_activity_uuid}}"
+url: "http://localhost:8083/api/v1/activities/{{created_activity_uuid}}"
 method: GET
 scripts:
   - type: afterResponse

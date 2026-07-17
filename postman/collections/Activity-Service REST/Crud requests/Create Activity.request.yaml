@@ -1,6 +1,6 @@
 $kind: http-request
 name: Create Activity
-url: "http://localhost:8083/api/users/{{temp_author_uuid}}/activities"
+url: "http://localhost:8083/api/v1/users/{{temp_author_uuid}}/activities"
 method: POST
 headers:
   Content-Type: application/json

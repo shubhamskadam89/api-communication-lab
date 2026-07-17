@@ -1,6 +1,6 @@
 $kind: http-request
 name: Update Activity
-url: "http://localhost:8083/api/activities/{{created_activity_uuid}}"
+url: "http://localhost:8083/api/v1/activities/{{created_activity_uuid}}"
 method: PUT
 headers:
   Content-Type: application/json
