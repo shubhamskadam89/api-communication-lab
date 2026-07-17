@@ -40,7 +40,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUuidAndIsDeletedFalse(uuid)
                 .orElseThrow(() -> new UserNotFoundException("User not found with uuid: " + uuid));
 
-        // Call internal function-to-function using internal Long ID
         performInternalUpdate(user.getId(), request);
 
         User refreshedUser = userRepository.findByIdAndIsDeletedFalse(user.getId())
@@ -48,7 +47,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.toResponse(refreshedUser);
     }
 
-    // Internal function-to-function helper method using internal Long ID
     private void performInternalUpdate(Long id, UpdateUserRequest request) {
         log.info("Performing internal update for user ID: {}", id);
         User user = userRepository.findByIdAndIsDeletedFalse(id)
@@ -78,12 +76,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(UUID uuid) {
+    public UserResponse deleteUser(UUID uuid) {
         User user = userRepository.findByUuidAndIsDeletedFalse(uuid)
                 .orElseThrow(() -> new UserNotFoundException("User not found with uuid: " + uuid));
         log.info("Soft deleting user with internal ID: {}", user.getId());
         user.setDeleted(true);
-        userRepository.save(user);
+        user = userRepository.save(user);
         log.info("Soft delete completed for internal ID: {}", user.getId());
+        return userMapper.toResponse(user);
     }
 }
