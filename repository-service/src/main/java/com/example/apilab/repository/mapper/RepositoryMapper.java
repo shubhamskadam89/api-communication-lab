@@ -4,6 +4,7 @@ import com.example.apilab.repository.dto.request.CreateRepositoryRequest;
 import com.example.apilab.repository.dto.request.UpdateRepositoryRequest;
 import com.example.apilab.repository.dto.response.RepositoryResponse;
 import com.example.apilab.repository.entity.Repository;
+import com.example.apilab.repository.util.SlugGenerator;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +16,7 @@ public class RepositoryMapper {
         }
         Repository repository = new Repository();
         repository.setName(request.getName());
-        repository.setSlug(generateSlug(request.getName()));
+        repository.setSlug(SlugGenerator.generate(request.getName()));
         repository.setDescription(request.getDescription());
         repository.setVisibility(request.getVisibility());
         repository.setPrimaryLanguage(request.getPrimaryLanguage());
@@ -29,7 +30,7 @@ public class RepositoryMapper {
         return RepositoryResponse.builder()
                 .uuid(repository.getUuid())
                 .ownerUuid(repository.getOwnerUuid())
-                .createdBy(repository.getCreatedBy())
+                .createdByUuid(repository.getCreatedBy())
                 .name(repository.getName())
                 .slug(repository.getSlug())
                 .description(repository.getDescription())
@@ -62,16 +63,5 @@ public class RepositoryMapper {
         if (request.getIsArchived() != null) {
             repository.setArchived(request.getIsArchived());
         }
-    }
-
-    private String generateSlug(String name) {
-        if (name == null) {
-            return null;
-        }
-        return name.toLowerCase()
-                .replaceAll("[^a-z0-9\\s-]", "")
-                .replaceAll("\\s+", "-")
-                .replaceAll("-+", "-")
-                .trim();
     }
 }

@@ -16,7 +16,7 @@ import java.util.UUID;
 public class RepositoryResponse {
     private UUID uuid;
     private UUID ownerUuid;
-    private UUID createdBy;
+    private UUID createdByUuid;
     private String name;
     private String slug;
     private String description;
