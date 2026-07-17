@@ -6,7 +6,7 @@ CREATE TABLE activities (
     visibility VARCHAR(20) NOT NULL,
     like_count BIGINT NOT NULL DEFAULT 0,
     comment_count BIGINT NOT NULL DEFAULT 0,
-    media_urls TEXT,
+    media_urls JSONB,
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
