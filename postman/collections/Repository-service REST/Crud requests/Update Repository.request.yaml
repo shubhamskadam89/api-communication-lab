@@ -8,12 +8,20 @@ body:
   type: json
   content: |+
     {
-      "name": "Updated name display",
-      "description": "Updated description",
+      "name": "{{temp_updated_repo_name}}",
+      "description": "{{temp_updated_repo_description}}",
       "visibility": "PRIVATE",
-      "primaryLanguage": "Kotlin"
+      "primaryLanguage": "{{temp_updated_repo_language}}"
     }
 scripts:
+  - type: beforeRequest
+    code: |-
+      var cycleId = Date.now() + "_" + pm.variables.replaceIn("{{$randomInt}}");
+      var languages = ["Kotlin", "Java", "Go", "Python", "TypeScript"];
+      var languageIndex = Number(pm.variables.replaceIn("{{$randomInt}}")) % languages.length;
+      pm.globals.set("temp_updated_repo_name", "Updated Repo " + cycleId);
+      pm.globals.set("temp_updated_repo_description", "Updated description " + cycleId);
+      pm.globals.set("temp_updated_repo_language", languages[languageIndex]);
   - type: afterResponse
     code: |-
       pm.test("Status code is 200", function () {
@@ -21,8 +29,9 @@ scripts:
       });
       pm.test("Name and description updated, slug stays stable", function () {
           var jsonData = pm.response.json();
-          pm.expect(jsonData.data.name).to.eql("Updated name display");
-          pm.expect(jsonData.data.description).to.eql("Updated description");
+          pm.expect(jsonData.data.name).to.eql(pm.globals.get("temp_updated_repo_name"));
+          pm.expect(jsonData.data.description).to.eql(pm.globals.get("temp_updated_repo_description"));
+          pm.expect(jsonData.data.primaryLanguage).to.eql(pm.globals.get("temp_updated_repo_language"));
           pm.expect(jsonData.data.slug).to.eql(pm.globals.get("created_repo_slug"));
       });
 order: 4000

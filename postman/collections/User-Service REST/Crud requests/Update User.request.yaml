@@ -15,9 +15,10 @@ body:
 scripts:
   - type: beforeRequest
     code: |-
-      pm.globals.set("temp_new_displayName", pm.variables.replaceIn("{{$randomFullName}}"));
-      pm.globals.set("temp_new_bio", pm.variables.replaceIn("{{$randomJobDescriptor}}"));
-      pm.globals.set("temp_new_avatarUrl", pm.variables.replaceIn("{{$randomAbstractImage}}"));
+      var cycleId = Date.now() + "_" + pm.variables.replaceIn("{{$randomInt}}");
+      pm.globals.set("temp_new_displayName", "Updated User " + cycleId);
+      pm.globals.set("temp_new_bio", "Updated developer profile " + cycleId);
+      pm.globals.set("temp_new_avatarUrl", "https://example.com/avatar/updated-" + cycleId + ".png");
   - type: afterResponse
     code: |-
       pm.test("Status code is 200", function () {

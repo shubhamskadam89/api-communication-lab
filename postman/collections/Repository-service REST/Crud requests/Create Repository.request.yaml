@@ -9,15 +9,20 @@ body:
   content: |+
     {
       "name": "{{temp_repo_name}}",
-      "description": "Postman generated description",
+      "description": "{{temp_repo_description}}",
       "visibility": "PUBLIC",
-      "primaryLanguage": "Java"
+      "primaryLanguage": "{{temp_repo_language}}"
     }
 scripts:
   - type: beforeRequest
     code: |-
+      var cycleId = Date.now() + "_" + pm.variables.replaceIn("{{$randomInt}}");
+      var languages = ["Java", "Kotlin", "Go", "Python", "TypeScript"];
+      var languageIndex = Number(pm.variables.replaceIn("{{$randomInt}}")) % languages.length;
       pm.globals.set("temp_owner_uuid", pm.variables.replaceIn("{{$guid}}"));
-      pm.globals.set("temp_repo_name", "Repo-" + pm.variables.replaceIn("{{$randomInt}}"));
+      pm.globals.set("temp_repo_name", "Repo-" + cycleId);
+      pm.globals.set("temp_repo_description", "Postman generated description " + cycleId);
+      pm.globals.set("temp_repo_language", languages[languageIndex]);
   - type: afterResponse
     code: |-
       pm.test("Status code is 201", function () {

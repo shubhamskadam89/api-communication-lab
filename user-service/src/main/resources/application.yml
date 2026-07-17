@@ -16,11 +16,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  # flyway:
-  #   enabled: true
-  #   baseline-on-migrate: true
 
-# grpc:
-#   server:
-#     port: 9091
-
+grpc:
+  server:
+    port: 9091

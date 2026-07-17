@@ -10,16 +10,19 @@ body:
     {
       "username": "{{temp_username}}",
       "email": "{{temp_email}}",
-      "displayName": "User {{$randomInt}}",
-      "bio": "Developer profile",
-      "avatarUrl": "https://example.com/avatar.png"
+      "displayName": "{{temp_displayName}}",
+      "bio": "{{temp_bio}}",
+      "avatarUrl": "{{temp_avatarUrl}}"
     }
 scripts:
   - type: beforeRequest
     code: |-
-      var randomInt = pm.variables.replaceIn("{{$randomInt}}");
-      pm.globals.set("temp_username", "user_" + randomInt);
-      pm.globals.set("temp_email", "user_" + randomInt + "@example.com");
+      var cycleId = Date.now() + "_" + pm.variables.replaceIn("{{$randomInt}}");
+      pm.globals.set("temp_username", "user_" + cycleId);
+      pm.globals.set("temp_email", "user_" + cycleId + "@example.com");
+      pm.globals.set("temp_displayName", "User " + cycleId);
+      pm.globals.set("temp_bio", "Developer profile " + cycleId);
+      pm.globals.set("temp_avatarUrl", "https://example.com/avatar/" + cycleId + ".png");
   - type: afterResponse
     code: |-
       pm.test("Status code is 201", function () {
