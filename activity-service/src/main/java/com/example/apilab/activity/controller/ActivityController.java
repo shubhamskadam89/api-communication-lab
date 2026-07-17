@@ -34,7 +34,7 @@ public class ActivityController {
 
     private final ActivityService activityService;
 
-    @PostMapping("/api/users/{authorUuid}/activities")
+    @PostMapping("/api/v1/users/{authorUuid}/activities")
     public ResponseEntity<ApiResponse<ActivityResponse>> create(
             @PathVariable UUID authorUuid,
             @RequestBody @Valid CreateActivityRequest request,
@@ -50,7 +50,7 @@ public class ActivityController {
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
-    @GetMapping("/api/activities/{uuid}")
+    @GetMapping("/api/v1/activities/{uuid}")
     public ResponseEntity<ApiResponse<ActivityResponse>> get(
             @PathVariable UUID uuid,
             HttpServletRequest servletRequest) {
@@ -65,7 +65,7 @@ public class ActivityController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/api/activities")
+    @GetMapping("/api/v1/activities")
     public ResponseEntity<ApiResponse<Page<ActivitySummaryResponse>>> list(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -73,7 +73,8 @@ public class ActivityController {
             HttpServletRequest servletRequest) {
         log.info("REST Request - Get paginated activities feed, page: {}, size: {}, sort: {}", page, size, sort);
 
-        Pageable pageable = parsePageable(page, size, sort);
+        int boundedSize = Math.min(size, 100);
+        Pageable pageable = parsePageable(page, boundedSize, sort);
         Page<ActivitySummaryResponse> response = activityService.list(pageable);
 
         ApiResponse<Page<ActivitySummaryResponse>> apiResponse = ApiResponse.success(
@@ -85,7 +86,7 @@ public class ActivityController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/api/users/{authorUuid}/activities")
+    @GetMapping("/api/v1/users/{authorUuid}/activities")
     public ResponseEntity<ApiResponse<Page<ActivitySummaryResponse>>> listByUser(
             @PathVariable UUID authorUuid,
             @RequestParam(defaultValue = "0") int page,
@@ -94,7 +95,8 @@ public class ActivityController {
             HttpServletRequest servletRequest) {
         log.info("REST Request - Get paginated activities for user: {}, page: {}, size: {}, sort: {}", authorUuid, page, size, sort);
 
-        Pageable pageable = parsePageable(page, size, sort);
+        int boundedSize = Math.min(size, 100);
+        Pageable pageable = parsePageable(page, boundedSize, sort);
         Page<ActivitySummaryResponse> response = activityService.listByUser(authorUuid, pageable);
 
         ApiResponse<Page<ActivitySummaryResponse>> apiResponse = ApiResponse.success(
@@ -106,7 +108,7 @@ public class ActivityController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PutMapping("/api/activities/{uuid}")
+    @PutMapping("/api/v1/activities/{uuid}")
     public ResponseEntity<ApiResponse<ActivityResponse>> update(
             @PathVariable UUID uuid,
             @RequestBody @Valid UpdateActivityRequest request,
@@ -122,7 +124,7 @@ public class ActivityController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @DeleteMapping("/api/activities/{uuid}")
+    @DeleteMapping("/api/v1/activities/{uuid}")
     public ResponseEntity<ApiResponse<ActivityResponse>> delete(
             @PathVariable UUID uuid,
             HttpServletRequest servletRequest) {
