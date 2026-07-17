@@ -6,6 +6,8 @@ plugins {
 dependencies {
     implementation(project(":shared-proto"))
     implementation(libs.spring.boot.starter.web)
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.grpc.server.spring.boot)
